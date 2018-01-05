@@ -85,8 +85,8 @@ Vagrant.configure("2") do |config|
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
   config.vm.provision "provision", type: "shell", inline: <<-SH_PRO
-    yum -y update
     yum -y install epel-release
+    yum -y update
     yum -y install wget git docker golang make gcc zip mercurial krb5-devel bsdtar bc rsync bind-utils file jq tito createrepo openssl gpgme gpgme-devel libassuan libassuan-devel ansible
     cp -f /vagrant/daemon.json /etc/docker/daemon.json
     systemctl daemon-reload && systemctl start docker && systemctl enable docker
@@ -95,10 +95,20 @@ Vagrant.configure("2") do |config|
     MASTER_IP=$(hostname -i|cut -f2 -d ' ')
     # oc cluster up --public-hostname=#{MASTER_NAME} --routing-suffix="${MASTER_IP}"#{ROUTING_SUFFIX} --metrics=true --service-catalog=true
     oc cluster up --public-hostname=#{MASTER_NAME} --routing-suffix="${MASTER_IP}"#{ROUTING_SUFFIX}
-    cd /vagrant/awx
-    git remote update
-    git pull --ff-only
+    if [ ! -d awx ]
+    then
+      git clone https://github.com/ansible/awx
+      cd awx
+    else
+      cd awx
+      git remote update
+      git pull --ff-only
+    fi
     sed -i 's/openshift_host=.*/openshift_host=#{MASTER_NAME}:8443/' installer/inventory
+    sed -i '/openshift_host/s/^#//g' installer/inventory
+    sed -i '/awx_openshift_project/s/^#//g' installer/inventory
+    sed -i '/openshift_user/s/^#//g' installer/inventory
+    sed -i '/awx_node_port/s/^#//g' installer/inventory
     ansible-playbook -i installer/inventory installer/install.yml -e openshift_password=developer  -e docker_registry_password=$(oc whoami -t)
   SH_PRO
 end
