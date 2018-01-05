@@ -6,6 +6,8 @@ MASTER_NAME = "origin-master"
 #BRIDGE_IF = "enp6s0"
 BRIDGE_IF = "wlp5s0"
 ROUTING_SUFFIX = ".xip.io"
+INSECURE_REGISTRY = "172.30.0.0/16"
+
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
 # configures the configuration version (we support older styles for
 # backwards compatibility). Please don't change it unless you know what
