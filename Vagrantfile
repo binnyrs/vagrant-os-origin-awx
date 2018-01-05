@@ -3,10 +3,15 @@
 
 BOX_IMAGE = "centos/7"
 MASTER_NAME = "origin-master"
-#BRIDGE_IF = "enp6s0"
-BRIDGE_IF = "wlp5s0"
+BRIDGE_IF = "enp6s0"
+#BRIDGE_IF = "wlp5s0"
 ROUTING_SUFFIX = ".xip.io"
 INSECURE_REGISTRY = "172.30.0.0/16"
+
+#MACHINE DETAILS
+CPUS = "2"
+MEMORY = "4096"
+DISK = "40G"
 
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
 # configures the configuration version (we support older styles for
@@ -76,8 +81,8 @@ Vagrant.configure("2") do |config|
   #   vb.gui = true
   #
   #   # Customize the amount of memory on the VM:
-    vb.memory = "3072"
-    vb.cpus = "2"
+    vb.memory = MEMORY
+    vb.cpus = CPUS
   end
   #
   # View the documentation for the provider you are using for more
