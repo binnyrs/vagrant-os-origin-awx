@@ -13,6 +13,10 @@ CPUS = "2"
 MEMORY = "4096"
 DISK = "40G"
 
+OS_URL = "https://github.com/openshift/origin/releases/download/"
+OS_VER = "v3.7.0"
+OS_FILE = "openshift-origin-client-tools-v3.7.0-7ed6862-linux-64bit.tar.gz"
+
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
 # configures the configuration version (we support older styles for
 # backwards compatibility). Please don't change it unless you know what
@@ -101,8 +105,13 @@ Vagrant.configure("2") do |config|
 }
 EOF
     systemctl daemon-reload && systemctl start docker && systemctl enable docker
-    wget https://github.com/openshift/origin/releases/download/v3.7.0/openshift-origin-client-tools-v3.7.0-7ed6862-linux-64bit.tar.gz -O /tmp/oc.tar.gz
-    tar -zxvf /tmp/oc.tar.gz --strip-components=1 -C /usr/bin/
+    if [ ! -f /tmp/"${OS_FILE}" ]
+    then
+      wget "${OS_URL}/${OS_VER}/${OS_FILE}" -O /tmp/"${OS_FILE}"
+      tar -zxvf /tmp/oc.tar.gz --strip-components=1 -C /usr/bin/
+    else
+      oc cluster down
+    fi
     MASTER_IP=$(hostname -i|cut -f2 -d ' ')
     # oc cluster up --public-hostname=#{MASTER_NAME} --routing-suffix="${MASTER_IP}"#{ROUTING_SUFFIX} --metrics=true --service-catalog=true
     oc cluster up --public-hostname=#{MASTER_NAME} --routing-suffix="${MASTER_IP}"#{ROUTING_SUFFIX}
