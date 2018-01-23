@@ -1,7 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-BOX_IMAGE = "coolsvap/my-centos"
+BOX_IMAGE = "centos/7"
 MASTER_NAME = "origin-master"
 BRIDGE_IF = "enp6s0"
 #BRIDGE_IF = "wlp5s0"
